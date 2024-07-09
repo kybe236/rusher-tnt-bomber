@@ -15,6 +15,8 @@ public class TntNukerModule extends ToggleableModule {
     private final BooleanSetting leftTnt = new BooleanSetting("Left", "Place tnt left", true);
     private final BooleanSetting rightTnt = new BooleanSetting("Right", "Place tnt right", true);
     private final BooleanSetting bellowTnt = new BooleanSetting("Bellow", "Place tnt bellow", true);
+    private final BooleanSetting frontTnt = new BooleanSetting("Front", "Place tnt front", false);
+    private final BooleanSetting backTnt = new BooleanSetting("Back", "Place tnt back", false);
     private final BooleanSetting placeRedstone = new BooleanSetting("Redstone", "Place redstone", true);
 
     /**
@@ -27,6 +29,8 @@ public class TntNukerModule extends ToggleableModule {
                 leftTnt,
                 rightTnt,
                 bellowTnt,
+                frontTnt,
+                backTnt,
                 placeRedstone
         );
     }
@@ -34,7 +38,7 @@ public class TntNukerModule extends ToggleableModule {
     @Subscribe
     public void onTick(EventUpdate event) {
         if (mc.level != null) {
-            TntNuker.onTick(leftTnt.getValue(), rightTnt.getValue(), bellowTnt.getValue(), placeRedstone.getValue());
+            TntNuker.onTick(leftTnt.getValue(), rightTnt.getValue(), bellowTnt.getValue(), placeRedstone.getValue(), frontTnt.getValue(), backTnt.getValue());
         }
     }
     @Override

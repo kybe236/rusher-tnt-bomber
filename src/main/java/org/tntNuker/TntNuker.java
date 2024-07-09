@@ -35,7 +35,7 @@ public class TntNuker extends Plugin {
 		this.getLogger().info("[TNTNUKER] Stopped!");
 	}
 
-	public static void onTick(boolean left, boolean right, boolean below, boolean redstone) {
+	public static void onTick(boolean left, boolean right, boolean below, boolean redstone, boolean front, boolean back) {
 		// get the player's position
 		double x = mc.player.getX();
 		double y = mc.player.getY();
@@ -53,29 +53,35 @@ public class TntNuker extends Plugin {
 // Determine the block positions to the left and right of the player based on the yaw
 		BlockPos blockPosLeftOfPlayer = blockPosBelowPlayer;
 		BlockPos blockPosRightOfPlayer = blockPosBelowPlayer;
+		BlockPos blockPosFrontOfPlayer = blockPosBelowPlayer;
+		BlockPos blockPosBackOfPlayer = blockPosBelowPlayer;
 		BlockPos blockBellowRedstone = blockPosBelowPlayer.offset(0, -1, 0);
 
 		if (yaw > -45 && yaw <= 45) {
 			// Facing positive X
 			blockPosRightOfPlayer = blockPosBelowPlayer.offset(-1, 0, 0);
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
+			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
+			blockPosBackOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
 		} else if (yaw > 45 && yaw <= 135) {
 			// Facing positive Z
 			blockPosRightOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
+			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(-1, 0, 0);
+			blockPosBackOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
 		} else if (yaw > 135 || yaw <= -135) {
 			// Facing negative X
 			blockPosRightOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(-1, 0, 0);
+			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
+			blockPosBackOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
 		} else if (yaw > -135 && yaw <= -45) {
 			// Facing negative Z
 			blockPosRightOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
+			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
+			blockPosBackOfPlayer = blockPosBelowPlayer.offset(-1, 0, 0);
 		}
-
-
-		ChatUtils.print("Yaw: " + yaw);
-		ChatUtils.print("Block below player: " + blockPosBelowPlayer);
 
 
 		// see if you can place an block below the player
@@ -83,6 +89,8 @@ public class TntNuker extends Plugin {
 		if (below) placeBlock(blockBellowRedstone, Blocks.TNT);
 		if (right) placeBlock(blockPosRightOfPlayer, Blocks.TNT);
 		if (left) placeBlock(blockPosLeftOfPlayer, Blocks.TNT);
+		if (front) placeBlock(blockPosFrontOfPlayer, Blocks.TNT);
+		if (back) placeBlock(blockPosBackOfPlayer, Blocks.TNT);
 	}
 	public static void placeBlock(BlockPos blockPos, Block block) {
 		// Check if the block position below the player is air
