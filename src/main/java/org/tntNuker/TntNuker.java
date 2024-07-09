@@ -12,6 +12,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.rusherhack.client.api.RusherHackAPI;
 import org.rusherhack.client.api.plugin.Plugin;
+import org.rusherhack.client.api.system.IRotationManager;
 import org.rusherhack.client.api.utils.ChatUtils;
 import org.tntNuker.modules.TntNukerModule;
 
@@ -104,16 +105,22 @@ public class TntNuker extends Plugin {
 				if (slot < 9 && slot > -1) {
 					mc.player.getInventory().selected = slot;
 
-					// Create a hit result for the block placement
-					BlockHitResult hitResult = new BlockHitResult(
-							new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5), // Position
-							Direction.UP, // Direction
-							blockPos, // Block position
-							false // Inside block
+					BlockHitResult blockHitResult = new BlockHitResult(
+							new Vec3(
+									(int) Math.floor(blockPos.getX()),
+									(int) Math.floor(blockPos.getY()),
+									(int) Math.floor(blockPos.getZ())
+							),
+							Direction.UP,
+							blockPos,
+							false
 					);
-
-					// Use the item (right-click) at the specified position
-					mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, hitResult);
+					RusherHackAPI.getRotationManager().updateRotation(blockPos);
+					if (RusherHackAPI.interactions().useBlock(blockHitResult, InteractionHand.MAIN_HAND, true)) {
+						ChatUtils.print("Placed block at " + blockPos);
+					}else {
+						ChatUtils.print("Failed to place block at " + blockPos);
+					}
 				}
 			}
 		}
