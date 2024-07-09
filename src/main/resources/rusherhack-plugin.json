@@ -1,0 +1,12 @@
+{
+  "Plugin-Class": "org.tntNuker.TntNuker",
+  "Name": "Tnt Nuker",
+  "Version": "${plugin_version}",
+  "Description": "Bukes with Tnt (fun)",
+  "Authors": [
+    "kybe236"
+  ],
+  "Minecraft-Versions": [
+    "1.20.4"
+  ]
+}
