@@ -2,6 +2,7 @@ package org.tntNuker;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -100,13 +101,13 @@ public class TntNuker extends Plugin {
 			if (item != Items.AIR) {
 				// Get the slot containing this item in the player's inventory
 				int slot = mc.player.getInventory().findSlotMatchingItem(item.asItem().getDefaultInstance());
-				if (slot != -1) {
+				if (slot < 9 && slot > -1) {
 					mc.player.getInventory().selected = slot;
 
 					// Create a hit result for the block placement
 					BlockHitResult hitResult = new BlockHitResult(
 							new Vec3(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5), // Position
-							mc.player.getDirection(), // Facing direction
+							Direction.UP, // Direction
 							blockPos, // Block position
 							false // Inside block
 					);
