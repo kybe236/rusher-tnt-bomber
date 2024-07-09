@@ -96,7 +96,8 @@ public class TntNuker extends Plugin {
 	}
 	public static void placeBlock(BlockPos blockPos, Block block) {
 		// Check if the block position below the player is air
-		if (mc.level.getBlockState(blockPos).isAir()) {
+        assert mc.level != null;
+        if (mc.level.getBlockState(blockPos).isAir()) {
 			// Find the block in the player's inventory
 			Item item = Item.BY_BLOCK.getOrDefault(block, Items.AIR);
 			if (item != Items.AIR) {
@@ -105,21 +106,16 @@ public class TntNuker extends Plugin {
 				if (slot < 9 && slot > -1) {
 					mc.player.getInventory().selected = slot;
 
-					BlockHitResult blockHitResult = new BlockHitResult(
-							new Vec3(
-									(int) Math.floor(blockPos.getX()),
-									(int) Math.floor(blockPos.getY()),
-									(int) Math.floor(blockPos.getZ())
-							),
-							Direction.UP,
-							blockPos,
-							false
-					);
-					RusherHackAPI.getRotationManager().updateRotation(blockPos);
-					if (RusherHackAPI.interactions().useBlock(blockHitResult, InteractionHand.MAIN_HAND, true)) {
-						ChatUtils.print("Placed block at " + blockPos);
+					BlockHitResult blockHitResult = RusherHackAPI.interactions().getBlockPlaceHitResult(blockPos, false, false, 5.0);
+					if (blockHitResult != null) {
+						RusherHackAPI.getRotationManager().updateRotation(blockPos);
+						if (RusherHackAPI.interactions().useBlock(blockHitResult, InteractionHand.MAIN_HAND, true)) {
+							ChatUtils.print("Placed block at " + blockPos);
+						} else {
+							ChatUtils.print("Failed to place block at " + blockPos + " (useBlock returned false)");
+						}
 					}else {
-						ChatUtils.print("Failed to place block at " + blockPos);
+						ChatUtils.print("Failed to place block at " + blockPos + " (blockHitResult was null)");
 					}
 				}
 			}
