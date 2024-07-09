@@ -58,6 +58,7 @@ public class TntNuker extends Plugin {
 		BlockPos blockPosFrontOfPlayer = blockPosBelowPlayer;
 		BlockPos blockPosBackOfPlayer = blockPosBelowPlayer;
 		BlockPos blockBellowRedstone = blockPosBelowPlayer.offset(0, -1, 0);
+		BlockPos blockDoubleBellowRedstone = blockPosBelowPlayer.offset(0, -2, 0);
 
 		if (yaw > -45 && yaw <= 45) {
 			// Facing positive X
@@ -65,24 +66,32 @@ public class TntNuker extends Plugin {
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
 			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
 			blockPosBackOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
-		} else if (yaw > 45 && yaw <= 135) {
+		}
+		if (yaw > 45 && yaw <= 135) {
 			// Facing positive Z
 			blockPosRightOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
 			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(-1, 0, 0);
 			blockPosBackOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
-		} else if (yaw > 135 || yaw <= -135) {
+		}
+		if (yaw > 135 || yaw <= -135) {
 			// Facing negative X
 			blockPosRightOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(-1, 0, 0);
 			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
 			blockPosBackOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
-		} else if (yaw > -135 && yaw <= -45) {
+		}
+		if (yaw > -135 && yaw <= -45) {
 			// Facing negative Z
 			blockPosRightOfPlayer = blockPosBelowPlayer.offset(0, 0, 1);
 			blockPosLeftOfPlayer = blockPosBelowPlayer.offset(0, 0, -1);
 			blockPosFrontOfPlayer = blockPosBelowPlayer.offset(1, 0, 0);
 			blockPosBackOfPlayer = blockPosBelowPlayer.offset(-1, 0, 0);
+		}
+
+		//check if player is realy in air
+		if (!mc.level.getBlockState(blockPosBelowPlayer).isAir()) {
+			if (redstone) placeBlock(blockDoubleBellowRedstone, Blocks.REDSTONE_BLOCK);
 		}
 
 
@@ -115,6 +124,37 @@ public class TntNuker extends Plugin {
 							ChatUtils.print("Failed to place block at " + blockPos + " (useBlock returned false)");
 						}
 					}else {
+						// make sideway block placement
+						BlockPos blockStrightLeft = blockPos.offset(0, 0, -1);
+						BlockPos blockStrightRight = blockPos.offset(0, 0, 1);
+
+						if (mc.level.getBlockState(blockStrightLeft).isAir()) {
+							blockHitResult = RusherHackAPI.interactions().getBlockPlaceHitResult(blockStrightLeft, false, false, 5.0);
+							if (blockHitResult != null) {
+								RusherHackAPI.getRotationManager().updateRotation(blockStrightLeft);
+								if (RusherHackAPI.interactions().useBlock(blockHitResult, InteractionHand.MAIN_HAND, true)) {
+									ChatUtils.print("Placed block at " + blockStrightLeft);
+								} else {
+									ChatUtils.print("Failed to place block at " + blockStrightLeft + " (useBlock returned false)");
+								}
+							}else {
+								ChatUtils.print("Failed to place block at " + blockStrightLeft + " (blockHitResult was null)");
+							}
+						}
+						if (mc.level.getBlockState(blockStrightRight).isAir()) {
+							blockHitResult = RusherHackAPI.interactions().getBlockPlaceHitResult(blockStrightRight, false, false, 5.0);
+							if (blockHitResult != null) {
+								RusherHackAPI.getRotationManager().updateRotation(blockStrightRight);
+								if (RusherHackAPI.interactions().useBlock(blockHitResult, InteractionHand.MAIN_HAND, true)) {
+									ChatUtils.print("Placed block at " + blockStrightRight);
+								} else {
+									ChatUtils.print("Failed to place block at " + blockStrightRight + " (useBlock returned false)");
+								}
+							}else {
+								ChatUtils.print("Failed to place block at " + blockStrightRight + " (blockHitResult was null)");
+							}
+						}
+
 						ChatUtils.print("Failed to place block at " + blockPos + " (blockHitResult was null)");
 					}
 				}
