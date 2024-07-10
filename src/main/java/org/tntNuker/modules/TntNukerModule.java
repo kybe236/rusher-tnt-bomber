@@ -41,6 +41,8 @@ public class TntNukerModule extends ToggleableModule {
             TntNuker.onTick(leftTnt.getValue(), rightTnt.getValue(), bellowTnt.getValue(), placeRedstone.getValue(), frontTnt.getValue(), backTnt.getValue());
         }
     }
+
+
     @Override
     public void onEnable() {
         if (mc.level != null) {
